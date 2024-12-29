@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVibe - Order Tracking</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .tracking-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tracking-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 70%;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .input-group button {
+            padding: 10px;
+            font-size: 1rem;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .input-group button:hover {
+            background: #0056b3;
+        }
+
+        .order-details {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .order-details h2 {
+            margin-bottom: 10px;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="tracking-container">
+        <h1>Track Your Order</h1>
+        <div class="input-group">
+            <input type="text" id="order-id-input" placeholder="Enter your Order ID">
+            <button onclick="trackOrder()">Track</button>
+        </div>
+        <div class="order-details" id="order-details">
+            <h2>Order Details</h2>
+            <p id="item-list"></p>
+            <p id="total"></p>
+            <p id="delivery-time"></p>
+        </div>
+    </div>
+
+    <script>
+        function trackOrder() {
+            const inputOrderId = document.getElementById("order-id-input").value;
+            const storedOrderId = localStorage.getItem("orderId");
+            const orderDetails = JSON.parse(localStorage.getItem("orderDetails"));
+
+            if (inputOrderId === storedOrderId) {
+                // Display Order Details
+                const orderDetailsDiv = document.getElementById("order-details");
+                const itemList = orderDetails.items.map(item => `${item.name} (₹${item.price})`).join(", ");
+                document.getElementById("item-list").textContent = `Items: ${itemList}`;
+                document.getElementById("total").textContent = `Total: ₹${orderDetails.total}`;
+                document.getElementById("delivery-time").textContent = `Estimated Delivery: ${orderDetails.deliveryTime}`;
+                orderDetailsDiv.style.display = "block";
+            } else {
+                alert("Invalid Order ID. Please try again.");
+            }
+        }
+    </script>
+</body>
+</html>

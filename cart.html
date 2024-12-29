@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVibe Cart</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cart-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #444;
+            transition: background 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background: #222;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .cart-item-info h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .cart-item-info p {
+            margin: 5px 0 0;
+            font-size: 1rem;
+            color: #bbb;
+        }
+
+        .remove-btn {
+            background: #f00;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .total {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            text-align: right;
+        }
+
+        .checkout-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 15px 30px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .checkout-btn:hover {
+            background: #0056b3;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Your Cart</h1>
+        <div id="cart-items"></div>
+        <p class="total" id="total-amount">Total: ₹0</p>
+        <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+
+    <script>
+        // Retrieve cart from localStorage
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const cartItemsContainer = document.getElementById("cart-items");
+        const totalAmount = document.getElementById("total-amount");
+
+        // Populate cart items
+        let total = 0;
+        cart.forEach(item => {
+            total += item.price;
+
+            const cartItem = document.createElement("div");
+            cartItem.className = "cart-item";
+
+            cartItem.innerHTML = `
+                <img src="${item.image}" alt="${item.name}">
+                <div class="cart-item-info">
+                    <h3>${item.name}</h3>
+                    <p>Price: ₹${item.price}</p>
+                </div>
+                <button class="remove-btn" onclick="removeItem('${item.id}')">Remove</button>
+            `;
+            cartItemsContainer.appendChild(cartItem);
+        });
+
+        // Update total amount
+        totalAmount.textContent = `Total: ₹${total}`;
+
+        // Remove item from cart
+        function removeItem(productId) {
+            const updatedCart = cart.filter(item => item.id !== productId);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+            alert("Item removed!");
+            window.location.reload();
+        }
+
+
+        // Checkout functionality (demo)
+        function checkout() {
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+    
+    // Generate Order ID
+    const orderId = "EV" + Math.floor(100000 + Math.random() * 900000);
+    const orderDetails = {
+        id: orderId,
+        items: cart,
+        total: total,
+        deliveryTime: "3-5 business days"
+    };
+
+    // Save Order Details in localStorage
+    localStorage.setItem("orderId", orderId);
+    localStorage.setItem("orderDetails", JSON.stringify(orderDetails));
+
+    // Clear Cart
+    localStorage.removeItem("cart");
+
+    alert(`Thank you for your purchase! Your Order ID is ${orderId}`);
+    window.location.href = "tracking.html"; // Redirect to tracking page
+}
+
+    </script>
+</body>
+</html>
